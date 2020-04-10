@@ -2,6 +2,14 @@ var express = require('express');
 
 var app = express();
 
+//====================================================
+//INICIO Modulo para encriptacion
+//====================================================
+var bcrypt = require('bcryptjs');
+//====================================================
+//FIN Modulo para encriptacion
+//====================================================
+
 var Usuario = require('../models/usuario');
 
 
@@ -44,14 +52,14 @@ app.post('/', (req, res)=>{
     var usuario = new Usuario({
         nombre: body.nombre,
         email: body.email,
-        password: body.password,
+        password: bcrypt.hashSync(body.password, 10),
         img: body.img,
         role: body.role
     });
 
     usuario.save((err, usuarioGuardado)=>{
         if(err){
-            res.status(500).json({
+            res.status(400).json({
                 ok: false,
                 mensaje: 'Error al crear un usuario',
                 error: err
