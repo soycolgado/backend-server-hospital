@@ -1,4 +1,7 @@
 var express = require('express');
+var jwt = require('jsonwebtoken');
+// var SEED = require('../config/config').SEED;
+var mdAutenticacion = require('../middlewares/autenticacion');
 
 var app = express();
 
@@ -43,11 +46,15 @@ app.get('/',(req, res, next)=>{
 //====================================================
 
 
+
+
+
+
 //====================================================
 //INICIO Actualizar Usuario
 //====================================================
 
-app.put('/:id',(req, res)=>{
+app.put('/:id', mdAutenticacion.verificaToken,(req, res)=>{
     var id = req.params.id;
     var body = req.body;
 
@@ -106,7 +113,7 @@ app.put('/:id',(req, res)=>{
 //====================================================
 //INICIO Crear un nuevo Usuario
 //====================================================
-app.post('/', (req, res)=>{
+app.post('/', mdAutenticacion.verificaToken ,(req, res)=>{
 
     var body = req.body;
 
@@ -129,7 +136,8 @@ app.post('/', (req, res)=>{
 
         res.status(201).json({
             ok: true,
-            usuario: usuarioGuardado
+            usuario: usuarioGuardado,
+            usuarioToken: req.usuario
         });
     });
 
@@ -142,7 +150,7 @@ app.post('/', (req, res)=>{
 //INICIO Borrar un usuario
 //====================================================
 
-app.delete( '/:id', ( req, res ) => {
+app.delete( '/:id',mdAutenticacion.verificaToken ,( req, res ) => {
     var id = req.params.id;
     Usuario.findByIdAndDelete( id, ( err, usuarioBorrado ) => {
         if(err){
