@@ -138,4 +138,40 @@ app.post('/', (req, res)=>{
 //FIN Crear un nuevo Usuario
 //====================================================
 
+//====================================================
+//INICIO Borrar un usuario
+//====================================================
+
+app.delete( '/:id', ( req, res ) => {
+    var id = req.params.id;
+    Usuario.findByIdAndDelete( id, ( err, usuarioBorrado ) => {
+        if(err){
+            return res.status(500).json({
+                ok: false,
+                mensaje: 'Error al borrar el Usuario',
+                error: err
+            });
+        }
+
+        if(!usuarioBorrado){
+            return res.status(400).json({
+                ok: false,
+                mensaje: 'No existe un usuario con ese id',
+                error: {message: 'No existe un usuario con ese id'}
+            });
+        }
+
+        res.status(200).json({
+            ok: true,
+            usuario: usuarioBorrado
+        });
+
+    });
+
+});
+
+//====================================================
+//FIN Borrar un usuario
+//====================================================
+
 module.exports = app;
